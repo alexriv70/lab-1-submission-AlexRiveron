@@ -41,16 +41,18 @@ architecture clock_div of clock_div is
 
 signal count : std_logic_vector (31 downto 0) := X"00000000";
 signal temp : std_logic := '0';
+
 begin
-    div  <= '0';
     process(clk_in) begin
         if(rising_edge(clk_in)) then
             if(count >= X"03B9ACA0") then
             temp <= not temp;
             div <= temp;
             count <= X"00000000";
-            end if;
+            else
             count <= std_logic_vector( unsigned(count) + 1 );
+            div <= temp;
+        end if;
         end if;
     end process;    
 end clock_div;
