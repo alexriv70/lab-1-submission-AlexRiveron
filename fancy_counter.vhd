@@ -41,7 +41,7 @@ entity fancy_counter is
            rst : in STD_LOGIC;
            updn : in STD_LOGIC;
            val : in STD_LOGIC_VECTOR (3 downto 0);
-           cnt : inout STD_LOGIC_VECTOR (3 downto 0));
+           cnt : inout STD_LOGIC_VECTOR (3 downto 0) := (others => '0'));
 end fancy_counter;
 
 architecture Behavioral of fancy_counter is
@@ -58,24 +58,32 @@ begin
                         if (updn ='1') then
                             temp <= dir;
                         end if;
+                        
                         if (ld = '1') then
                             cnt <= val;
                         else if (temp = '1') then
                             if (cnt = val) then
                                 cnt <= "0000";
-                            else 
+                            else if (cnt <val) then
                                 cnt <= STD_LOGIC_VECTOR (unsigned(cnt) + 1);
+                            else
+                                cnt <= "0000"; 
                             end if;
+                            end if;
+                            
                         else if( temp = '0') then
                             if (cnt = "0000") then
                                 cnt <= val;
-                            else 
+                            else if (cnt > "0000") then
                                 cnt <= STD_LOGIC_VECTOR (unsigned(cnt) - 1);
-                            end if;
+                            else
+                                cnt <= val;
+                            end if; end if;
                         end if;
                         end if;
                         end if;
                     end if;
+                    
                 else if (rst = '1') then
                     cnt <= "0000";
                     if (clk_en = '1') then
