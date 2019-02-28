@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -39,7 +40,7 @@ end debounce;
 
 architecture Behavioral of debounce is
 
-signal counter: std_logic_vector(1 downto 0) := "00";
+signal counter: std_logic_vector(1 downto 0);
 
 begin
 process(clk)
@@ -49,11 +50,17 @@ process(clk)
                 case (counter) is
                     when "11" => dbnc <= '1';
                     when "00" | "01" | "10" => dbnc <= '0';
+                        counter <= std_logic_vector(unsigned(counter) + 1);
                     when others => dbnc <= '0';
+                        counter <= "00";
                  end case;
+            else if (btn = '0') then
+                counter <= "00";
+                dbnc <= '0';
             else
                 counter <= "00";
                 dbnc <= '0';
+            end if;
             end if;   
         end if;
 end process;
